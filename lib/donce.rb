@@ -20,11 +20,92 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Kernel.
+require 'os'
+require 'qbash'
+require 'securerandom'
+
+# Execute one bash command.
 #
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2024-2025 Yegor Bugayenko
 # License:: MIT
-def Kernel.donce
-  puts 'ok'
+module Kernel
+  # Build Docker image (or use existing one), run Docker container, and then clean up.
+  #
+  # @param [String] dockerfile The content of the +Dockerfile+
+  # @param [String] home The directory with Dockerfile and all other necessary files
+  # @param [String] image The name of Docker image, e.g. "ubuntu:24.04"
+  # @param [Logger] log The logging destination, can be +$stdout+
+  def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '', timeout: 10)
+    raise 'Either use "dockerfile" or "home"' if dockerfile && home
+    raise 'Either use "dockerfile" or "image"' if dockerfile && image
+    raise 'Either use "image" or "home"' if home && image
+    raise 'Either "dockerfile", or "home", or "image" must be provided' if !dockerfile && !home && !image
+    docker = ENV['DONCE_SUDO'] ? 'sudo docker' : 'docker'
+    img =
+      if image
+        image
+      else
+        i = "donce-#{SecureRandom.hex(8)}"
+        if dockerfile
+          Dir.mktmpdir do |home|
+            File.write(File.join(home, 'Dockerfile'), dockerfile)
+            qbash("#{docker} build #{Shellwords.escape(home)} -t #{i}", log:)
+          end
+        end
+        i
+      end
+    container = "donce-#{SecureRandom.hex(8)}"
+    host = OS.linux? ? '172.17.0.1' : 'host.docker.internal'
+    begin
+      stdout = nil
+      code = 0
+      begin
+        cmd = [
+          docker, 'run',
+          '--name', Shellwords.escape(container),
+          OS.linux? ? '' : "--add-host #{host}:host-gateway",
+          args,
+          env.map { |k, v| "-e #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
+          root ? '' : "--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}",
+          Shellwords.escape(img),
+          command
+        ].join(' ')
+        stdout, code =
+          Timeout.timeout(timeout) do
+            qbash(
+              cmd,
+              log:,
+              accept: nil,
+              both: true,
+              env:
+            )
+          end
+        unless code.zero?
+          log.error(stdout)
+          raise \
+            "Failed to run #{cmd} " \
+            "(exit code is ##{code}, stdout has #{stdout.split("\n").count} lines)"
+        end
+        if block_given?
+          r yield container, host
+          return r
+        end
+      ensure
+        qbash(
+          "#{docker} logs #{Shellwords.escape(container)}",
+          level: code.zero? ? Logger::DEBUG : Logger::ERROR,
+          log:
+        )
+        qbash("#{docker} rm -f #{Shellwords.escape(container)}", log:)
+      end
+      stdout
+    ensure
+      Timeout.timeout(10) do
+        unless image
+          qbash("#{docker} rmi #{img}", log:)
+        end
+      end
+    end
+  end
 end

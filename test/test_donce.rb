@@ -29,5 +29,8 @@ require_relative '../lib/donce'
 # Copyright:: Copyright (c) 2025 Yegor Bugayenko
 # License:: MIT
 class TestDonce < Minitest::Test
-  def test_simple; end
+  def test_runs_simple_echo
+    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::VERBOSE)
+    assert_equal(stdout, "hello\n")
+  end
 end
