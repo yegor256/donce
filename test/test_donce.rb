@@ -36,10 +36,9 @@ class TestDonce < Minitest::Test
 
   def test_runs_daemon
     seen = false
-    donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id, host|
+    donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|
       seen = true
       refute_empty(id)
-      refute_empty(host)
     end
     assert(seen)
   end

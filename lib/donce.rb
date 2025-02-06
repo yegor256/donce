@@ -48,9 +48,8 @@ require 'shellwords'
 # background execution of the container (in daemon mode):
 #
 #  def test_runs_daemon
-#    donce(dockerfile: "FROM ubuntu\nCMD sleep 9999") do |id, host|
+#    donce(dockerfile: "FROM ubuntu\nCMD sleep 9999") do |id|
 #      refute_empty(id)  # the ID of the container
-#      refute_empty(host)  # the hostname of it
 #    end
 #  end
 #
@@ -61,6 +60,12 @@ require 'shellwords'
 # Copyright:: Copyright (c) 2025 Yegor Bugayenko
 # License:: MIT
 module Kernel
+  # The name of the localhost inside Docker container.
+  # @return [String] The hostname
+  def donce_host
+    OS.linux? ? '172.17.0.1' : 'host.docker.internal'
+  end
+
   # Build Docker image (or use existing one), run Docker container, and then clean up.
   #
   # @param [String] dockerfile The content of the +Dockerfile+
@@ -72,6 +77,7 @@ module Kernel
   # @param [Boolean] root Let user inside the container be "root"?
   # @param [String|Array<String>] command The command for the script inside the container
   # @param [Integer] timeout Maximum seconds to spend on each +docker+ call
+  # @return [String] The stdout of the container
   def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
             timeout: 10)
     raise 'Either use "dockerfile" or "home"' if dockerfile && home
@@ -93,7 +99,6 @@ module Kernel
         i
       end
     container = "donce-#{SecureRandom.hex(8)}"
-    host = OS.linux? ? '172.17.0.1' : 'host.docker.internal'
     begin
       stdout = nil
       code = 0
@@ -102,7 +107,7 @@ module Kernel
           docker, 'run',
           block_given? ? '-d' : '',
           '--name', Shellwords.escape(container),
-          OS.linux? ? '' : "--add-host #{host}:host-gateway",
+          OS.linux? ? '' : "--add-host #{donce_host}:host-gateway",
           args,
           env.map { |k, v| "-e #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
           root ? '' : "--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}",
@@ -126,7 +131,7 @@ module Kernel
             "(exit code is ##{code}, stdout has #{stdout.split("\n").count} lines)"
         end
         if block_given?
-          r = yield container, host
+          r = yield container
           return r
         end
       ensure
