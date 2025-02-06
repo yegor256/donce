@@ -11,7 +11,7 @@
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/donce)](https://hitsofcode.com/view/github/yegor256/donce)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/donce/blob/master/LICENSE.txt)
 
-This small Ruby library helps building temporary Docker
+This small Ruby library helps building temporary [Docker]
 images, run Docker containers, and clean up afterwards --- may be
 convenient for automated tests:
 
