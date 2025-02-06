@@ -54,6 +54,9 @@ require 'shellwords'
 #    end
 #  end
 #
+# If you need to run +docker+ via +sudo+, simply set +DONCE_SUDO+ environment
+# variable to any value.
+#
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2025 Yegor Bugayenko
 # License:: MIT
