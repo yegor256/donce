@@ -34,6 +34,8 @@ jobs:
         ruby: [3.3]
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
+    env:
+      DOCKER_HOST: "unix://$HOME/.docker/run/docker.sock"
     steps:
       - uses: actions/checkout@v4
       - run: |
