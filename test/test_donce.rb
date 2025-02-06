@@ -30,7 +30,17 @@ require_relative '../lib/donce'
 # License:: MIT
 class TestDonce < Minitest::Test
   def test_runs_simple_echo
-    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::VERBOSE)
+    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::NULL)
     assert_equal("hello\n", stdout)
+  end
+
+  def test_runs_daemon
+    seen = false
+    donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id, host|
+      seen = true
+      refute_empty(id)
+      refute_empty(host)
+    end
+    assert(seen)
   end
 end

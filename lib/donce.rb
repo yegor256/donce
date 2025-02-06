@@ -64,6 +64,7 @@ module Kernel
       begin
         cmd = [
           docker, 'run',
+          block_given? ? '-d' : '',
           '--name', Shellwords.escape(container),
           OS.linux? ? '' : "--add-host #{host}:host-gateway",
           args,
@@ -89,7 +90,7 @@ module Kernel
             "(exit code is ##{code}, stdout has #{stdout.split("\n").count} lines)"
         end
         if block_given?
-          r yield container, host
+          r = yield container, host
           return r
         end
       ensure
