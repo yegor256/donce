@@ -35,9 +35,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          brew install docker
-          colima start
+      - run: brew install docker
         if: runner.os == 'macos'
       - uses: ruby/setup-ruby@v1
         with:
