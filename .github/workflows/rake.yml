@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
     env:
-      DOCKER_HOST: "unix://$HOME/.docker/run/docker.sock"
+
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -53,3 +53,9 @@ jobs:
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: bundle install
       - run: bundle exec rake
+        if: runner.os == 'ubuntu'
+      - run: |
+          DOCKER_HOST=unix://$HOME/.colima/default/docker.sock
+          export DOCKER_HOST
+          bundle exec rake
+        if: runner.os == 'macos'
