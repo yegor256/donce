@@ -34,6 +34,11 @@ class TestDonce < Minitest::Test
     assert_equal("hello\n", stdout)
   end
 
+  def test_runs_existing_image
+    stdout = donce(image: 'ubuntu:24.04', command: 'echo hello', log: Loog::NULL)
+    assert_equal("hello\n", stdout)
+  end
+
   def test_runs_daemon
     seen = false
     donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|
