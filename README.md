@@ -26,7 +26,7 @@ class MyTest < Minitest::Test
     )
     assert_equal("Hello, world!\n", stdout)
   end
-
+end
 ```
 
 That's it.

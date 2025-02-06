@@ -24,10 +24,36 @@ require 'os'
 require 'qbash'
 require 'securerandom'
 
-# Execute one bash command.
+# Execute Docker container and clean up afterwards.
+#
+# This function helps building temporary Docker
+# images, run Docker containers, and clean up afterwards — may be
+# convenient for automated tests (for example, with Minitest):
+#
+#  class MyTest < Minitest::Test
+#    def test_prints_hello_world
+#      stdout = donce(
+#        dockerfile: '
+#          FROM ubuntu
+#          CMD echo "Hello, world!"
+#        '
+#      )
+#      assert_equal("Hello, world!\n", stdout)
+#    end
+#  end
+#
+# It's possible to pass a block to it too, which will lead to
+# background execution of the container (in daemon mode):
+#
+#  def test_runs_daemon
+#    donce(dockerfile: "FROM ubuntu\nCMD sleep 9999") do |id, host|
+#      refute_empty(id)  # the ID of the container
+#      refute_empty(host)  # the hostname of it
+#    end
+#  end
 #
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2024-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2025 Yegor Bugayenko
 # License:: MIT
 module Kernel
   # Build Docker image (or use existing one), run Docker container, and then clean up.
