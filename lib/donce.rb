@@ -36,7 +36,8 @@ module Kernel
   # @param [String] home The directory with Dockerfile and all other necessary files
   # @param [String] image The name of Docker image, e.g. "ubuntu:24.04"
   # @param [Logger] log The logging destination, can be +$stdout+
-  def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '', timeout: 10)
+  def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
+            timeout: 10)
     raise 'Either use "dockerfile" or "home"' if dockerfile && home
     raise 'Either use "dockerfile" or "image"' if dockerfile && image
     raise 'Either use "image" or "home"' if home && image
@@ -102,9 +103,7 @@ module Kernel
       stdout
     ensure
       Timeout.timeout(10) do
-        unless image
-          qbash("#{docker} rmi #{img}", log:)
-        end
+        qbash("#{docker} rmi #{img}", log:) unless image
       end
     end
   end

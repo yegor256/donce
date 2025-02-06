@@ -31,6 +31,6 @@ require_relative '../lib/donce'
 class TestDonce < Minitest::Test
   def test_runs_simple_echo
     stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::VERBOSE)
-    assert_equal(stdout, "hello\n")
+    assert_equal("hello\n", stdout)
   end
 end
