@@ -13,15 +13,20 @@
 
 This small Ruby library helps building temporary [Docker]
 images, run Docker containers, and clean up afterwards --- may be
-convenient for automated tests:
+convenient for automated tests (for example, with [Minitest]):
 
 ```ruby
-donce(
-  dockerfile: '
-    FROM ubuntu
-    ENTRYPOINT ["/bin/bash", "echo", "hello, world!"]
-  '
-)
+class MyTest < Minitest::Test
+  def test_prints_hello_world
+    stdout = donce(
+      dockerfile: '
+        FROM ubuntu
+        CMD echo "Hello, world!"
+      '
+    )
+    assert_equal("Hello, world!\n", stdout)
+  end
+
 ```
 
 That's it.
@@ -43,3 +48,4 @@ bundle exec rake
 If it's clean and you don't see any error messages, submit your pull request.
 
 [Docker]: https://www.docker.com/
+[Minitest]: https://github.com/minitest/minitest
