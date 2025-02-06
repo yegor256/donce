@@ -39,6 +39,14 @@ class TestDonce < Minitest::Test
     assert_equal("hello\n", stdout)
   end
 
+  def test_runs_from_home
+    Dir.mktmpdir do |home|
+      File.write(File.join(home, 'Dockerfile'), "FROM ubuntu\nCMD echo hello")
+      stdout = donce(home:, log: Loog::NULL)
+      assert_equal("hello\n", stdout)
+    end
+  end
+
   def test_runs_daemon
     seen = false
     donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|

@@ -91,10 +91,12 @@ module Kernel
       else
         i = "donce-#{SecureRandom.hex(8)}"
         if dockerfile
-          Dir.mktmpdir do |home|
-            File.write(File.join(home, 'Dockerfile'), dockerfile)
-            qbash("#{docker} build #{Shellwords.escape(home)} -t #{i}", log:)
+          Dir.mktmpdir do |tmp|
+            File.write(File.join(tmp, 'Dockerfile'), dockerfile)
+            qbash("#{docker} build #{Shellwords.escape(tmp)} -t #{i}", log:)
           end
+        else
+          qbash("#{docker} build #{Shellwords.escape(home)} -t #{i}", log:)
         end
         i
       end
