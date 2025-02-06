@@ -43,6 +43,7 @@ jobs:
           brew install colima
           brew services start colima
           sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
+          docker --version
           while true; do docker pull ubuntu && break; done
         if: runner.os == 'macos'
       - uses: ruby/setup-ruby@v1
