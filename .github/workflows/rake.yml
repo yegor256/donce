@@ -49,4 +49,4 @@ jobs:
           bundler-cache: true
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: bundle install
-      - run: DONCE_SUDO=true bundle exec rake
+      - run: bundle exec rake
