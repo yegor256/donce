@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'logger'
 require 'os'
 require 'qbash'
 require 'securerandom'
+require 'shellwords'
 
 # Execute Docker container and clean up afterwards.
 #

@@ -39,4 +39,4 @@ release:
     gem push *.gem --config-file ../rubygems.yml
 merge:
   script: |-
-    bundle exec rake
+    DONCE_SUDO=true bundle exec rake
