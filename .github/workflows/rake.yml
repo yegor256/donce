@@ -35,7 +35,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - run: brew install docker
+      - run: |
+          brew install docker
+          brew install colima
+          colima start
+          sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
         if: runner.os == 'macos'
       - uses: ruby/setup-ruby@v1
         with:
