@@ -34,8 +34,6 @@ jobs:
         ruby: [3.3]
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
-    env:
-
     steps:
       - uses: actions/checkout@v4
       - run: |
