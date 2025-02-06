@@ -107,15 +107,15 @@ module Kernel
       begin
         cmd = [
           docker, 'run',
-          block_given? ? '-d' : '',
+          block_given? ? '-d' : nil,
           '--name', Shellwords.escape(container),
-          OS.linux? ? '' : "--add-host #{donce_host}:host-gateway",
+          OS.linux? ? nil : "--add-host #{donce_host}:host-gateway",
           args,
           env.map { |k, v| "-e #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
-          root ? '' : "--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}",
+          root ? nil : "--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}",
           Shellwords.escape(img),
           command
-        ].join(' ')
+        ].compact.join(' ')
         stdout, code =
           Timeout.timeout(timeout) do
             qbash(
