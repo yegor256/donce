@@ -89,7 +89,7 @@ module Kernel
       if image
         image
       else
-        i = "donce-#{SecureRandom.hex(8)}"
+        i = "donce-#{SecureRandom.hex(6)}"
         if dockerfile
           Dir.mktmpdir do |tmp|
             File.write(File.join(tmp, 'Dockerfile'), dockerfile)
@@ -100,7 +100,7 @@ module Kernel
         end
         i
       end
-    container = "donce-#{SecureRandom.hex(8)}"
+    container = "donce-#{SecureRandom.hex(6)}"
     begin
       stdout = nil
       code = 0
