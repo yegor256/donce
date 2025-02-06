@@ -36,6 +36,11 @@ module Kernel
   # @param [String] home The directory with Dockerfile and all other necessary files
   # @param [String] image The name of Docker image, e.g. "ubuntu:24.04"
   # @param [Logger] log The logging destination, can be +$stdout+
+  # @param [String|Array<String>] args List of extra arguments for the +docker+ command
+  # @param [Hash<String,String>] env Environment variables going into the container
+  # @param [Boolean] root Let user inside the container be "root"?
+  # @param [String|Array<String>] command The command for the script inside the container
+  # @param [Integer] timeout Maximum seconds to spend on each +docker+ call
   def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
             timeout: 10)
     raise 'Either use "dockerfile" or "home"' if dockerfile && home
