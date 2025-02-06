@@ -55,4 +55,9 @@ class TestDonce < Minitest::Test
     end
     assert(seen)
   end
+
+  def test_returns_stdout_from_daemon
+    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::NULL) { |_| sleep 0.1 }
+    assert_equal("hello\n", stdout)
+  end
 end

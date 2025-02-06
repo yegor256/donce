@@ -132,16 +132,14 @@ module Kernel
             "Failed to run #{cmd} " \
             "(exit code is ##{code}, stdout has #{stdout.split("\n").count} lines)"
         end
-        if block_given?
-          r = yield container
-          return r
-        end
+        yield container if block_given?
       ensure
-        qbash(
+        logs = qbash(
           "#{docker} logs #{Shellwords.escape(container)}",
           level: code.zero? ? Logger::DEBUG : Logger::ERROR,
           log:
         )
+        stdout = logs if block_given?
         qbash("#{docker} rm -f #{Shellwords.escape(container)}", log:)
       end
       stdout
