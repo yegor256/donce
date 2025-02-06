@@ -37,12 +37,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          brew install docker
-          brew install colima
-          brew services start colima
-          sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
-          docker --version
-          while true; do docker pull ubuntu && break; done
+          brew install docker colima
+          colima start --runtime docker
+          docker context use colima
+          docker pull ubuntu
         if: runner.os == 'macos'
       - uses: ruby/setup-ruby@v1
         with:
@@ -51,9 +49,3 @@ jobs:
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: bundle install
       - run: bundle exec rake
-        if: runner.os == 'ubuntu'
-      - run: |
-          DOCKER_HOST=unix://$HOME/.colima/default/docker.sock
-          export DOCKER_HOST
-          bundle exec rake
-        if: runner.os == 'macos'
