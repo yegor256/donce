@@ -97,8 +97,10 @@ module Kernel
             File.write(File.join(tmp, 'Dockerfile'), dockerfile)
             qbash("#{docker} build #{Shellwords.escape(tmp)} -t #{i}", log:)
           end
-        else
+        elsif home
           qbash("#{docker} build #{Shellwords.escape(home)} -t #{i}", log:)
+        else
+          raise 'Either "dockerfile" or "home" must be provided'
         end
         i
       end

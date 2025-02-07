@@ -47,6 +47,24 @@ class TestDonce < Minitest::Test
     end
   end
 
+  def test_copies_resources
+    content = 'hello!'
+    Dir.mktmpdir do |home|
+      File.write(File.join(home, 'test.txt'), content)
+      File.write(
+        File.join(home, 'Dockerfile'),
+        [
+          'FROM ubuntu',
+          'WORKDIR /foo',
+          'COPY test.txt .',
+          'CMD cat test.txt'
+        ].join("\n")
+      )
+      stdout = donce(home:, log: Loog::NULL)
+      assert_equal(content, stdout)
+    end
+  end
+
   def test_runs_daemon
     seen = false
     donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|
