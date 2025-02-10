@@ -68,7 +68,7 @@ module Kernel
 
   # Build Docker image (or use existing one), run Docker container, and then clean up.
   #
-  # @param [String] dockerfile The content of the +Dockerfile+
+  # @param [String] dockerfile The content of the +Dockerfile+ (if array is provided, it will be concatenated)
   # @param [String] home The directory with Dockerfile and all other necessary files
   # @param [String] image The name of Docker image, e.g. "ubuntu:24.04"
   # @param [Logger] log The logging destination, can be +$stdout+
