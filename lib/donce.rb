@@ -76,12 +76,13 @@ module Kernel
   # @param [Hash<String,String>] env Environment variables going into the container
   # @param [Hash<String,String>] volumes Local to container volumes mapping
   # @param [Hash<String,String>] ports Local to container port mapping
+  # @param [Hash<String,String>] build_args Arguments for +docker build+ as +--build-arg+ may need
   # @param [Boolean] root Let user inside the container be "root"?
   # @param [String|Array<String>] command The command for the script inside the container
   # @param [Integer] timeout Maximum seconds to spend on each +docker+ call
   # @return [String] The stdout of the container
   def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
-            timeout: 10, volumes: {}, ports: {})
+            timeout: 10, volumes: {}, ports: {}, build_args: {})
     raise 'Either use "dockerfile" or "home"' if dockerfile && home
     raise 'Either use "dockerfile" or "image"' if dockerfile && image
     raise 'Either use "image" or "home"' if home && image
@@ -92,13 +93,18 @@ module Kernel
         image
       else
         i = "donce-#{SecureRandom.hex(6)}"
+        a = [
+          "--tag #{i}",
+          build_args.map { |k, v| "--build-arg #{Shellwords.escape("#{k}=#{v}")}" }.join(' ')
+        ].join(' ')
         if dockerfile
           Dir.mktmpdir do |tmp|
+            dockerfile = dockerfile.join("\n") if dockerfile.is_a?(Array)
             File.write(File.join(tmp, 'Dockerfile'), dockerfile)
-            qbash("#{docker} build #{Shellwords.escape(tmp)} -t #{i}", log:)
+            qbash("#{docker} build #{a} #{Shellwords.escape(tmp)}", log:)
           end
         elsif home
-          qbash("#{docker} build #{Shellwords.escape(home)} -t #{i}", log:)
+          qbash("#{docker} build #{a} #{Shellwords.escape(home)}", log:)
         else
           raise 'Either "dockerfile" or "home" must be provided'
         end
@@ -111,13 +117,13 @@ module Kernel
       begin
         cmd = [
           docker, 'run',
-          block_given? ? '-d' : nil,
+          block_given? ? '--detach' : nil,
           '--name', Shellwords.escape(container),
           OS.linux? ? nil : "--add-host #{donce_host}:host-gateway",
           args,
-          env.map { |k, v| "-e #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
-          ports.map { |k, v| "-p #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
-          volumes.map { |k, v| "-v #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
+          env.map { |k, v| "--env #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
+          ports.map { |k, v| "--publish #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
+          volumes.map { |k, v| "--volume #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
           root ? nil : "--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}",
           Shellwords.escape(img),
           command
@@ -146,7 +152,7 @@ module Kernel
           log:
         )
         stdout = logs if block_given?
-        qbash("#{docker} rm -f #{Shellwords.escape(container)}", log:)
+        qbash("#{docker} rm --force #{Shellwords.escape(container)}", log:)
       end
       stdout
     ensure

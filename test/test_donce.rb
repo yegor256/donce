@@ -34,6 +34,20 @@ class TestDonce < Minitest::Test
     assert_equal("hello\n", stdout)
   end
 
+  def test_prints_build_args
+    stdout = donce(
+      dockerfile: [
+        'FROM ubuntu',
+        'ARG FOO=what?',
+        'RUN echo $FOO > /tmp/foo',
+        'CMD cat /tmp/foo'
+      ],
+      build_args: { 'FOO' => 'hello' },
+      log: Loog::NULL
+    )
+    assert_equal("hello\n", stdout)
+  end
+
   def test_runs_existing_image
     stdout = donce(image: 'ubuntu:24.04', command: 'echo hello', log: Loog::NULL)
     assert_equal("hello\n", stdout)
