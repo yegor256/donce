@@ -90,8 +90,10 @@ GEM
     yard (0.9.37)
 
 PLATFORMS
+  arm64-darwin-23
   arm64-darwin-24
   ruby
+  x64-mingw-ucrt
 
 DEPENDENCIES
   donce!
@@ -100,7 +102,7 @@ DEPENDENCIES
   minitest-reporters (~> 1.7)
   minitest-retry (~> 0.2)
   rake (~> 13.2)
-  rubocop (= 1.75.1)
+  rubocop (~> 1.75)
   rubocop-minitest (> 0)
   rubocop-performance (> 0)
   rubocop-rake (> 0)
