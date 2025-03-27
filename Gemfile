@@ -11,7 +11,7 @@ gem 'minitest', '~>5.25', require: false
 gem 'minitest-reporters', '~>1.7', require: false
 gem 'minitest-retry', '~>0.2', require: false
 gem 'rake', '~>13.2', require: false
-gem 'rubocop', '1.73.0', require: false
+gem 'rubocop', '1.75.1', require: false
 gem 'rubocop-minitest', '>0', require: false
 gem 'rubocop-performance', '>0', require: false
 gem 'rubocop-rake', '>0', require: false
