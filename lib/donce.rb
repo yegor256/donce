@@ -8,6 +8,7 @@ require 'os'
 require 'qbash'
 require 'securerandom'
 require 'shellwords'
+require 'timeout'
 
 # Execute Docker container and clean up afterwards.
 #
