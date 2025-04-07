@@ -42,18 +42,18 @@ end
 
 Here's a list of the available parameters for `donce`:
 
-- `dockerfile`: Content of the Dockerfile (string or array of strings)
-- `home`: Directory with Dockerfile and all other necessary files
-- `image`: Name of a Docker image to use (e.g. "ubuntu:22.04")
-- `log`: Logging destination (defaults to $stdout)
-- `args`: Extra arguments for the docker command
-- `env`: Environment variables mapping for the container
-- `volumes`: Local to container volumes mapping
-- `ports`: Local to container port mapping
-- `build_args`: Arguments for docker build (--build-arg)
-- `root`: Let user inside the container be "root" (default: false)
-- `command`: The command to execute in the container
-- `timeout`: Maximum seconds to spend on each docker call (default: 10)
+* `dockerfile`: Content of the Dockerfile (string or array of strings)
+* `home`: Directory with Dockerfile and all other necessary files
+* `image`: Name of a Docker image to use (e.g. "ubuntu:22.04")
+* `log`: Logging destination (defaults to $stdout)
+* `args`: Extra arguments for the docker command
+* `env`: Environment variables mapping for the container
+* `volumes`: Local to container volumes mapping
+* `ports`: Local to container port mapping
+* `build_args`: Arguments for docker build (--build-arg)
+* `root`: Let user inside the container be "root" (default: false)
+* `command`: The command to execute in the container
+* `timeout`: Maximum seconds to spend on each docker call (default: 10)
 
 The function `donce_host()` returns the hostname of the host machine that
 can be used from within the container.
