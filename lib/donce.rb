@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'logger'
@@ -9,6 +9,7 @@ require 'qbash'
 require 'securerandom'
 require 'shellwords'
 require 'timeout'
+require 'tmpdir'
 
 # Execute Docker container and clean up afterwards.
 #
@@ -41,7 +42,7 @@ require 'timeout'
 # variable to any value.
 #
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2024-2025 Yegor Bugayenko
 # License:: MIT
 module Kernel
   # The name of the localhost inside Docker container.
@@ -54,7 +55,7 @@ module Kernel
   #
   # @param [String] dockerfile The content of the +Dockerfile+ (if array is provided, it will be concatenated)
   # @param [String] home The directory with Dockerfile and all other necessary files
-  # @param [String] image The name of Docker image, e.g. "ubuntu:24.04"
+  # @param [String] image The name of Docker image, e.g. "ubuntu:22.04"
   # @param [Logger] log The logging destination, can be +$stdout+
   # @param [String|Array<String>] args List of extra arguments for the +docker+ command
   # @param [Hash<String,String>] env Environment variables going into the container

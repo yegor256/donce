@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'English'
@@ -18,15 +18,15 @@ Gem::Specification.new do |s|
     'up, deleting them both. This may be helpful for automated testing, ' \
     'when you test how your code might behave in an isolated environment. ' \
     'This may also be helpful when you need a custom Docker image with a ' \
-    'tool inside, but Testcontainers don\' have such an image.'
+    'tool inside, but Testcontainers don\'t have such an image.'
   s.authors = ['Yegor Bugayenko']
   s.email = 'yegor256@gmail.com'
   s.homepage = 'http://github.com/yegor256/donce.rb'
   s.files = `git ls-files`.split($RS)
   s.rdoc_options = ['--charset=UTF-8']
   s.extra_rdoc_files = ['README.md', 'LICENSE.txt']
-  s.add_dependency 'backtrace', '>0'
-  s.add_dependency 'os', '>0'
-  s.add_dependency 'qbash', '>0'
+  s.add_dependency 'backtrace', '~> 0.3'
+  s.add_dependency 'os', '~> 1.1'
+  s.add_dependency 'qbash', '~> 0.3'
   s.metadata['rubygems_mfa_required'] = 'true'
 end

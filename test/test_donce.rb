@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'minitest/autorun'
@@ -9,7 +9,7 @@ require_relative '../lib/donce'
 
 # Test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2024-2025 Yegor Bugayenko
 # License:: MIT
 class TestDonce < Minitest::Test
   def test_runs_simple_echo
@@ -32,7 +32,7 @@ class TestDonce < Minitest::Test
   end
 
   def test_runs_existing_image
-    stdout = donce(image: 'ubuntu:24.04', command: 'echo hello', log: Loog::NULL)
+    stdout = donce(image: 'ubuntu:22.04', command: 'echo hello', log: Loog::NULL)
     assert_equal("hello\n", stdout)
   end
 
@@ -67,6 +67,7 @@ class TestDonce < Minitest::Test
     donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|
       seen = true
       refute_empty(id)
+      sleep 1
     end
     assert(seen)
   end

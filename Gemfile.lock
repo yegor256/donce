@@ -2,9 +2,9 @@ PATH
   remote: .
   specs:
     donce (0.0.0)
-      backtrace (> 0)
-      os (> 0)
-      qbash (> 0)
+      backtrace (~> 0.3)
+      os (~> 1.1)
+      qbash (~> 0.3)
 
 GEM
   remote: https://rubygems.org/

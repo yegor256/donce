@@ -11,7 +11,7 @@
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/donce)](https://hitsofcode.com/view/github/yegor256/donce)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/donce/blob/master/LICENSE.txt)
 
-This small Ruby library helps building temporary [Docker]
+This small Ruby library helps to build temporary [Docker]
 images, runs Docker containers, and cleans up afterwards — it may be
 convenient for automated tests (for example, with [Minitest]):
 
@@ -38,7 +38,24 @@ stdout = donce(image: 'ubuntu', command: 'sleep 9999') do |id|
 end
 ```
 
-That's it.
+## Parameters
+
+Here's a list of the available parameters for `donce`:
+
+- `dockerfile`: Content of the Dockerfile (string or array of strings)
+- `home`: Directory with Dockerfile and all other necessary files
+- `image`: Name of a Docker image to use (e.g. "ubuntu:22.04")
+- `log`: Logging destination (defaults to $stdout)
+- `args`: Extra arguments for the docker command
+- `env`: Environment variables mapping for the container
+- `volumes`: Local to container volumes mapping
+- `ports`: Local to container port mapping
+- `build_args`: Arguments for docker build (--build-arg)
+- `root`: Let user inside the container be "root" (default: false)
+- `command`: The command to execute in the container
+- `timeout`: Maximum seconds to spend on each docker call (default: 10)
+
+The function `donce_host()` returns the hostname of the host machine that can be used from within the container.
 
 ## How to contribute
 
@@ -46,7 +63,7 @@ Read
 [these guidelines](https://www.yegor256.com/2014/04/15/github-guidelines.html).
 Make sure your build is green before you contribute
 your pull request. You will need to have
-[Ruby](https://www.ruby-lang.org/en/) 3.2+ and
+[Ruby](https://www.ruby-lang.org/en/) 3.0+ and
 [Bundler](https://bundler.io/) installed. Then:
 
 ```bash
