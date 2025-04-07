@@ -67,11 +67,12 @@ module Kernel
   # @param [Integer] timeout Maximum seconds to spend on each +docker+ call
   # @return [String] The stdout of the container
   def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
-            timeout: 10, volumes: {}, ports: {}, build_args: {})
+            timeout: 60, volumes: {}, ports: {}, build_args: {})
     raise 'Either use "dockerfile" or "home"' if dockerfile && home
     raise 'Either use "dockerfile" or "image"' if dockerfile && image
     raise 'Either use "image" or "home"' if home && image
     raise 'Either "dockerfile", or "home", or "image" must be provided' if !dockerfile && !home && !image
+    raise 'The "timeout" must be an integer or nil' unless timeout.nil? || timeout.is_a?(Integer)
     docker = ENV['DONCE_SUDO'] ? 'sudo docker' : 'docker'
     img =
       if image

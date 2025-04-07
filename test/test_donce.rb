@@ -3,8 +3,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'minitest/autorun'
+require 'logger'
 require 'loog'
+require 'minitest/autorun'
 require_relative '../lib/donce'
 
 # Test.
