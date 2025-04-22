@@ -103,14 +103,14 @@ module Kernel
       begin
         cmd = [
           docker, 'run',
-          block_given? ? '--detach' : nil,
+          ('--detach' if block_given?),
           '--name', Shellwords.escape(container),
-          OS.linux? ? nil : "--add-host #{donce_host}:host-gateway",
+          ("--add-host #{donce_host}:host-gateway" if OS.linux?),
           args,
           env.map { |k, v| "--env #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
           ports.map { |k, v| "--publish #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
           volumes.map { |k, v| "--volume #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
-          root ? nil : "--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}",
+          ("--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}" if root),
           Shellwords.escape(img),
           command
         ].compact.join(' ')
