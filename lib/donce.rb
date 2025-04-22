@@ -112,22 +112,22 @@ module Kernel
         i
       end
     container = "donce-#{SecureRandom.hex(6)}"
+    stdout = nil
+    code = 0
+    cmd = [
+      docker, 'run',
+      ('--detach' if block_given?),
+      '--name', Shellwords.escape(container),
+      ("--add-host #{donce_host}:host-gateway" if OS.linux?),
+      args,
+      env.map { |k, v| "--env #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
+      ports.map { |k, v| "--publish #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
+      volumes.map { |k, v| "--volume #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
+      ("--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}" if root),
+      Shellwords.escape(img),
+      command
+    ].compact.join(' ')
     begin
-      stdout = nil
-      code = 0
-      cmd = [
-        docker, 'run',
-        ('--detach' if block_given?),
-        '--name', Shellwords.escape(container),
-        ("--add-host #{donce_host}:host-gateway" if OS.linux?),
-        args,
-        env.map { |k, v| "--env #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
-        ports.map { |k, v| "--publish #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
-        volumes.map { |k, v| "--volume #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
-        ("--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}" if root),
-        Shellwords.escape(img),
-        command
-      ].compact.join(' ')
       begin
         stdout, code =
           Timeout.timeout(timeout) do
