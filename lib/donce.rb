@@ -77,10 +77,13 @@ module Kernel
     raise 'The "volumes" must be a Hash' unless volumes.is_a?(Hash)
     raise 'The "log" is nil' if log.nil?
     raise 'The "args" is nil' if args.nil?
+    raise 'The "args" must be a String' unless args.is_a?(String)
     raise 'The "env" is nil' if env.nil?
     raise 'The "env" must be a Hash' unless env.is_a?(Hash)
     raise 'The "command" is nil' if command.nil?
+    raise 'The "command" must be a String' unless command.is_a?(String)
     raise 'The "timeout" is nil' if timeout.nil?
+    raise 'The "timeout" must be a number' unless timeout.is_a?(Integer) || timeout.is_a?(Float)
     raise 'The "ports" is nil' if ports.nil?
     raise 'The "ports" must be a Hash' unless ports.is_a?(Hash)
     raise 'The "build_args" is nil' if build_args.nil?
