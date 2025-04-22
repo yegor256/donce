@@ -118,12 +118,12 @@ module Kernel
       docker, 'run',
       ('--detach' if block_given?),
       '--name', Shellwords.escape(container),
-      ("--add-host #{donce_host}:host-gateway" if OS.linux?),
+      ("--add-host #{donce_host}:host-gateway" unless OS.linux?),
       args,
       env.map { |k, v| "--env #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
       ports.map { |k, v| "--publish #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
       volumes.map { |k, v| "--volume #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
-      ("--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}" if root),
+      ("--user=#{Shellwords.escape("#{Process.uid}:#{Process.gid}")}" unless root),
       Shellwords.escape(img),
       command
     ].compact.join(' ')
