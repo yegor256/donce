@@ -81,7 +81,7 @@ module Kernel
     raise 'The "env" is nil' if env.nil?
     raise 'The "env" must be a Hash' unless env.is_a?(Hash)
     raise 'The "command" is nil' if command.nil?
-    raise 'The "command" must be a String' unless command.is_a?(String)
+    raise 'The "command" must be a String or an Array' unless command.is_a?(String) || command.is_a?(Array)
     raise 'The "timeout" is nil' if timeout.nil?
     raise 'The "timeout" must be a number' unless timeout.is_a?(Integer) || timeout.is_a?(Float)
     raise 'The "ports" is nil' if ports.nil?
@@ -89,6 +89,7 @@ module Kernel
     raise 'The "build_args" is nil' if build_args.nil?
     raise 'The "build_args" must be a Hash' unless build_args.is_a?(Hash)
     docker = ENV['DONCE_SUDO'] ? 'sudo docker' : 'docker'
+    command = command.join(' ') if command.is_a?(Array)
     img =
       if image
         image
