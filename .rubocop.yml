@@ -32,3 +32,4 @@ Metrics/PerceivedComplexity:
   Enabled: false
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
+require: []
