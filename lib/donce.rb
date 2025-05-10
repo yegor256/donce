@@ -14,7 +14,7 @@ require 'tmpdir'
 # Execute Docker container and clean up afterwards.
 #
 # This function helps building temporary Docker
-# images, run Docker containers, and clean up afterwards — may be
+# images, runs Docker containers, and cleans up afterwards — may be
 # convenient for automated tests (for example, with Minitest):
 #
 #  class MyTest < Minitest::Test
@@ -53,7 +53,7 @@ module Kernel
 
   # Build Docker image (or use existing one), run Docker container, and then clean up.
   #
-  # @param [String] dockerfile The content of the +Dockerfile+ (if array is provided, it will be concatenated)
+  # @param [String|Array<String>] dockerfile The content of the +Dockerfile+ (if array is provided, it will be concatenated)
   # @param [String] home The directory with Dockerfile and all other necessary files
   # @param [String] image The name of Docker image, e.g. "ubuntu:22.04"
   # @param [Logger] log The logging destination, can be +$stdout+
@@ -66,6 +66,9 @@ module Kernel
   # @param [String|Array<String>] command The command for the script inside the container
   # @param [Integer] timeout Maximum seconds to spend on each +docker+ call
   # @return [String] The stdout of the container
+  # @yield [String] Container ID if block is given (runs container in daemon mode)
+  # @yieldparam [String] id The ID of the running container
+  # @yieldreturn [void] The container will be stopped after the block execution
   def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
             timeout: 60, volumes: {}, ports: {}, build_args: {})
     raise 'Either use "dockerfile" or "home"' if dockerfile && home

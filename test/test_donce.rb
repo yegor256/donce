@@ -8,7 +8,7 @@ require 'loog'
 require 'minitest/autorun'
 require_relative '../lib/donce'
 
-# Test.
+# Test for the Donce module functions.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2024-2025 Yegor Bugayenko
 # License:: MIT
