@@ -12,7 +12,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/donce/blob/master/LICENSE.txt)
 
 This small Ruby library helps to build temporary [Docker]
-images, runs Docker containers, and cleans up afterwards — it may be
+images, run Docker containers, and clean up afterwards — it may be
 convenient for automated tests (for example, with [Minitest]):
 
 ```ruby
@@ -29,7 +29,7 @@ class MyTest < Minitest::Test
 end
 ```
 
-It's possible to run Docker image in a background mode too:
+It's possible to run a Docker image in background mode too:
 
 ```ruby
 stdout = donce(image: 'ubuntu', command: 'sleep 9999') do |id|
@@ -37,6 +37,9 @@ stdout = donce(image: 'ubuntu', command: 'sleep 9999') do |id|
   # The "donce_host()" is the hostname of it
 end
 ```
+
+If you set `DONCE_SUDO` environment variable to `true`, `docker` will
+be executed via `sudo`.
 
 ## Parameters
 

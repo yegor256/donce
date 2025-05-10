@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
     'tool inside, but Testcontainers don\'t have such an image.'
   s.authors = ['Yegor Bugayenko']
   s.email = 'yegor256@gmail.com'
-  s.homepage = 'http://github.com/yegor256/donce.rb'
+  s.homepage = 'http://github.com/yegor256/donce'
   s.files = `git ls-files`.split($RS)
   s.rdoc_options = ['--charset=UTF-8']
   s.extra_rdoc_files = ['README.md', 'LICENSE.txt']
