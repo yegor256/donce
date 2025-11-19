@@ -13,7 +13,7 @@ require 'tmpdir'
 
 # Execute Docker container and clean up afterwards.
 #
-# This function helps building temporary Docker
+# This function helps build temporary Docker
 # images, runs Docker containers, and cleans up afterwards — may be
 # convenient for automated tests (for example, with Minitest):
 #
@@ -30,7 +30,7 @@ require 'tmpdir'
 #  end
 #
 # It's possible to pass a block to it too, which will lead to
-# background execution of the container (in daemon mode):
+# background execution of the container:
 #
 #  def test_runs_daemon
 #    donce(dockerfile: "FROM ubuntu\nCMD sleep 9999") do |id|
@@ -53,7 +53,8 @@ module Kernel
 
   # Build Docker image (or use existing one), run Docker container, and then clean up.
   #
-  # @param [String|Array<String>] dockerfile The content of the +Dockerfile+ (if array is provided, it will be concatenated)
+  # @param [String|Array<String>] dockerfile The content of the +Dockerfile+
+  #   (if array is provided, it will be concatenated)
   # @param [String] home The directory with Dockerfile and all other necessary files
   # @param [String] image The name of Docker image, e.g. "ubuntu:22.04"
   # @param [Logger] log The logging destination, can be +$stdout+
