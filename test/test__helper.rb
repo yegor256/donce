@@ -29,6 +29,7 @@ end
 require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
+Minitest.load :minitest_reporter
 
 # Configure Minitest/Retry to make tests retry on failure:
 require 'minitest/retry'
