@@ -61,7 +61,7 @@ module Kernel
   # @param [String|Array<String>] args List of extra arguments for the +docker+ command
   # @param [Hash<String,String>] env Environment variables going into the container
   # @param [Hash<String,String>] volumes Local to container volumes mapping
-  # @param [Hash<String,String>] ports Local to container port mapping
+  # @param [Hash<String,String>|Array<Integer>] ports Local to container port mapping
   # @param [Hash<String,String>] build_args Arguments for +docker build+ as +--build-arg+ may need
   # @param [Boolean] root Let user inside the container be "root"?
   # @param [String|Array<String>] command The command for the script inside the container
@@ -89,6 +89,7 @@ module Kernel
     raise 'The "timeout" is nil' if timeout.nil?
     raise 'The "timeout" must be a number' unless timeout.is_a?(Integer) || timeout.is_a?(Float)
     raise 'The "ports" is nil' if ports.nil?
+    ports = ports.to_h { |x| [x, x] } if ports.is_a?(Array)
     raise 'The "ports" must be a Hash' unless ports.is_a?(Hash)
     raise 'The "build_args" is nil' if build_args.nil?
     raise 'The "build_args" must be a Hash' unless build_args.is_a?(Hash)
