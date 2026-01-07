@@ -73,7 +73,7 @@ class TestDonce < Minitest::Test
           'ARG UID',
           'ARG GID',
           'RUN groupadd -g ${GID} foo || true',
-          'RUN useradd -m -u ${UID} -g ${GID} foo',
+          'RUN useradd -m -u ${UID} -g ${GID} foo || true',
           'USER foo',
           'WORKDIR /foo',
           'COPY --chown=${UID}:${GID} bar.txt .',
