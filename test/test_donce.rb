@@ -63,6 +63,27 @@ class TestDonce < Minitest::Test
     end
   end
 
+  def test_passes_gid_and_uid
+    Dir.mktmpdir do |home|
+      FileUtils.touch(File.join(home, 'bar.txt'))
+      File.write(
+        File.join(home, 'Dockerfile'),
+        [
+          'FROM ubuntu',
+          'ARG UID',
+          'ARG GID',
+          'RUN groupadd -g ${GID} foo || true',
+          'RUN useradd -m -u ${UID} -g ${GID} foo',
+          'USER foo',
+          'WORKDIR /foo',
+          'COPY --chown=${UID}:${GID} bar.txt .',
+          'CMD touch bar.txt'
+        ].join("\n")
+      )
+      donce(home:, log: Loog::NULL)
+    end
+  end
+
   def test_runs_daemon
     seen = false
     donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|

@@ -102,7 +102,9 @@ module Kernel
         i = "donce-#{SecureRandom.hex(6)}"
         a = [
           "--tag #{i}",
-          build_args.map { |k, v| "--build-arg #{Shellwords.escape("#{k}=#{v}")}" }.join(' ')
+          build_args.merge({ GID: Process.gid, UID: Process.uid }).map do |k, v|
+            "--build-arg #{Shellwords.escape("#{k}=#{v}")}"
+          end.join(' ')
         ].compact.join(' ')
         if dockerfile
           Dir.mktmpdir do |tmp|

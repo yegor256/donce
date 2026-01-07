@@ -38,8 +38,24 @@ stdout = donce(image: 'ubuntu', command: 'sleep 9999') do |id|
 end
 ```
 
-If you set `DONCE_SUDO` environment variable to `true`, `docker` will
-be executed via `sudo`.
+If you set `DONCE_SUDO` environment variable to `true`,
+  `docker` will be executed via `sudo`.
+
+Host group/user IDs are passed to the build, as `GID` and `UID` args.
+You can use them, when you copy resources into the image, for example:
+
+```
+FROM ubuntu
+ARG UID
+ARG GID
+RUN groupadd -g ${GID} foo || true
+RUN useradd -m -u ${UID} -g ${GID} foo
+USER foo',
+WORKDIR /foo
+COPY --chown=${UID}:${GID} bar.txt .
+```
+
+The `bar.txt` file is not ready to be modified inside the container.
 
 ## Parameters
 
