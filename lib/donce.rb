@@ -110,10 +110,10 @@ module Kernel
           Dir.mktmpdir do |tmp|
             dockerfile = dockerfile.join("\n") if dockerfile.is_a?(Array)
             File.write(File.join(tmp, 'Dockerfile'), dockerfile)
-            qbash("#{docker} build #{a} #{Shellwords.escape(tmp)}", log:)
+            qbash("#{docker} build #{a} #{Shellwords.escape(tmp)}", stdout: log)
           end
         elsif home
-          qbash("#{docker} build #{a} #{Shellwords.escape(home)}", log:)
+          qbash("#{docker} build #{a} #{Shellwords.escape(home)}", stdout: log)
         else
           raise 'Either "dockerfile" or "home" must be provided'
         end
@@ -141,7 +141,7 @@ module Kernel
           Timeout.timeout(timeout) do
             qbash(
               cmd,
-              log:,
+              stdout: log,
               accept: nil,
               both: true,
               env:
@@ -158,15 +158,15 @@ module Kernel
         logs = qbash(
           "#{docker} logs #{Shellwords.escape(container)}",
           level: code.zero? ? Logger::DEBUG : Logger::ERROR,
-          log:
+          stdout: log
         )
         stdout = logs if block_given?
-        qbash("#{docker} rm --force #{Shellwords.escape(container)}", log:)
+        qbash("#{docker} rm --force #{Shellwords.escape(container)}", stdout: log)
       end
       stdout
     ensure
       Timeout.timeout(10) do
-        qbash("#{docker} rmi #{img}", log:) unless image
+        qbash("#{docker} rmi #{img}", stdout: log) unless image
       end
     end
   end
