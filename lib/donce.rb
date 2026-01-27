@@ -81,7 +81,8 @@ module Kernel
     raise 'The "volumes" must be a Hash' unless volumes.is_a?(Hash)
     raise 'The "log" is nil' if log.nil?
     raise 'The "args" is nil' if args.nil?
-    raise 'The "args" must be a String' unless args.is_a?(String)
+    raise 'The "args" must be a String or Array' unless args.is_a?(String) || args.is_a?(Array)
+    args = args.join(' ') if args.is_a?(Array)
     raise 'The "env" is nil' if env.nil?
     raise 'The "env" must be a Hash' unless env.is_a?(Hash)
     raise 'The "command" is nil' if command.nil?
