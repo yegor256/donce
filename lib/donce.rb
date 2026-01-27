@@ -57,7 +57,8 @@ module Kernel
   #   (if array is provided, it will be concatenated)
   # @param [String] home The directory with Dockerfile and all other necessary files
   # @param [String] image The name of Docker image, e.g. "ubuntu:22.04"
-  # @param [Logger] log The logging destination, can be +$stdout+
+  # @param [IO] stdout The stdout destination
+  # @param [IO] stderr The stderr destination
   # @param [String|Array<String>] args List of extra arguments for the +docker+ command
   # @param [Hash<String,String>] env Environment variables going into the container
   # @param [Hash<String,String>] volumes Local to container volumes mapping
@@ -70,8 +71,8 @@ module Kernel
   # @yield [String] Container ID if block is given (runs container in daemon mode)
   # @yieldparam [String] id The ID of the running container
   # @yieldreturn [void] The container will be stopped after the block execution
-  def donce(dockerfile: nil, image: nil, home: nil, log: $stdout, args: '', env: {}, root: false, command: '',
-            timeout: 60, volumes: {}, ports: {}, build_args: {})
+  def donce(dockerfile: nil, image: nil, home: nil, stdout: $stdout, stderr: $stdout, args: '', env: {}, root: false,
+            command: '', timeout: 60, volumes: {}, ports: {}, build_args: {})
     raise 'Either use "dockerfile" or "home"' if dockerfile && home
     raise 'Either use "dockerfile" or "image"' if dockerfile && image
     raise 'Either use "image" or "home"' if home && image
@@ -79,7 +80,8 @@ module Kernel
     raise 'The "timeout" must be an integer or nil' unless timeout.nil? || timeout.is_a?(Integer)
     raise 'The "volumes" is nil' if volumes.nil?
     raise 'The "volumes" must be a Hash' unless volumes.is_a?(Hash)
-    raise 'The "log" is nil' if log.nil?
+    raise 'The "stdout" is nil' if stdout.nil?
+    raise 'The "stderr" is nil' if stderr.nil?
     raise 'The "args" is nil' if args.nil?
     raise 'The "args" must be a String or Array' unless args.is_a?(String) || args.is_a?(Array)
     args = args.join(' ') if args.is_a?(Array)
@@ -111,17 +113,17 @@ module Kernel
           Dir.mktmpdir do |tmp|
             dockerfile = dockerfile.join("\n") if dockerfile.is_a?(Array)
             File.write(File.join(tmp, 'Dockerfile'), dockerfile)
-            qbash("#{docker} build #{a} #{Shellwords.escape(tmp)}", stdout: log)
+            qbash("#{docker} build #{a} #{Shellwords.escape(tmp)}", stdout:, stderr:)
           end
         elsif home
-          qbash("#{docker} build #{a} #{Shellwords.escape(home)}", stdout: log)
+          qbash("#{docker} build #{a} #{Shellwords.escape(home)}", stdout:, stderr:)
         else
           raise 'Either "dockerfile" or "home" must be provided'
         end
         i
       end
     container = "donce-#{SecureRandom.hex(6)}"
-    stdout = nil
+    out = nil
     code = 0
     cmd = [
       docker, 'run',
@@ -138,36 +140,38 @@ module Kernel
     ].compact.join(' ')
     begin
       begin
-        stdout, code =
+        out, code =
           Timeout.timeout(timeout) do
             qbash(
               cmd,
-              stdout: log,
+              stdout:,
+              stderr:,
               accept: nil,
               both: true,
               env:
             )
           end
         unless code.zero?
-          log.error(stdout)
+          stderr.puts(out)
           raise \
             "Failed to run #{cmd} " \
-            "(exit code is ##{code}, stdout has #{stdout.split("\n").count} lines)"
+            "(exit code is ##{code}, stdout has #{out.split("\n").count} lines)"
         end
         yield container if block_given?
       ensure
         logs = qbash(
           "#{docker} logs #{Shellwords.escape(container)}",
           level: code.zero? ? Logger::DEBUG : Logger::ERROR,
-          stdout: log
+          stdout:,
+          stderr:
         )
-        stdout = logs if block_given?
-        qbash("#{docker} rm --force #{Shellwords.escape(container)}", stdout: log)
+        out = logs if block_given?
+        qbash("#{docker} rm --force #{Shellwords.escape(container)}", stdout:, stderr:)
       end
-      stdout
+      out
     ensure
       Timeout.timeout(10) do
-        qbash("#{docker} rmi #{img}", stdout: log) unless image
+        qbash("#{docker} rmi #{img}", stdout:, stderr:) unless image
       end
     end
   end

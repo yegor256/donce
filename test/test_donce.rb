@@ -14,7 +14,7 @@ require_relative '../lib/donce'
 # License:: MIT
 class TestDonce < Minitest::Test
   def test_runs_simple_echo
-    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::NULL)
+    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL)
     assert_equal("hello\n", stdout)
   end
 
@@ -27,20 +27,20 @@ class TestDonce < Minitest::Test
         'CMD cat /tmp/foo'
       ],
       build_args: { 'FOO' => 'hello' },
-      log: Loog::NULL
+      stdout: Loog::NULL, stderr: Loog::NULL
     )
     assert_equal("hello\n", stdout)
   end
 
   def test_runs_existing_image
-    stdout = donce(image: 'ubuntu:22.04', command: 'echo hello', log: Loog::NULL)
+    stdout = donce(image: 'ubuntu:22.04', command: 'echo hello', stdout: Loog::NULL, stderr: Loog::NULL)
     assert_equal("hello\n", stdout)
   end
 
   def test_runs_from_home
     Dir.mktmpdir do |home|
       File.write(File.join(home, 'Dockerfile'), "FROM ubuntu\nCMD echo hello")
-      stdout = donce(home:, log: Loog::NULL)
+      stdout = donce(home:, stdout: Loog::NULL, stderr: Loog::NULL)
       assert_equal("hello\n", stdout)
     end
   end
@@ -58,7 +58,7 @@ class TestDonce < Minitest::Test
           'CMD cat test.txt'
         ].join("\n")
       )
-      stdout = donce(home:, log: Loog::NULL)
+      stdout = donce(home:, stdout: Loog::NULL, stderr: Loog::NULL)
       assert_equal(content, stdout)
     end
   end
@@ -80,13 +80,13 @@ class TestDonce < Minitest::Test
           'CMD touch bar.txt'
         ].join("\n")
       )
-      donce(home:, log: Loog::NULL)
+      donce(home:, stdout: Loog::NULL, stderr: Loog::NULL)
     end
   end
 
   def test_runs_daemon
     seen = false
-    donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", log: Loog::NULL) do |id|
+    donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", stdout: Loog::NULL, stderr: Loog::NULL) do |id|
       seen = true
       refute_empty(id)
       sleep 1
@@ -95,7 +95,7 @@ class TestDonce < Minitest::Test
   end
 
   def test_returns_stdout_from_daemon
-    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", log: Loog::NULL) { |_| sleep 0.1 }
+    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL) { |_| sleep 0.1 }
     assert_equal("hello\n", stdout)
   end
 end
