@@ -126,7 +126,8 @@ module Kernel
     out = nil
     code = 0
     cmd = [
-      docker, 'run',
+      docker,
+      'run',
       ('--detach' if block_given?),
       '--name', Shellwords.escape(container),
       ("--add-host #{donce_host}:host-gateway" unless OS.linux?),
@@ -152,7 +153,6 @@ module Kernel
             )
           end
         unless code.zero?
-          stderr.puts(out)
           raise \
             "Failed to run #{cmd} " \
             "(exit code is ##{code}, stdout has #{out.split("\n").count} lines)"
