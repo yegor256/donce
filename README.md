@@ -44,7 +44,7 @@ If you set `DONCE_SUDO` environment variable to `true`,
 Host group/user IDs are passed to the build, as `GID` and `UID` args.
 You can use them, when you copy resources into the image, for example:
 
-```
+```dockerfile
 FROM ubuntu
 ARG UID
 ARG GID
