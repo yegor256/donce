@@ -99,4 +99,9 @@ class TestDonce < Minitest::Test
     stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL) { |_| sleep 0.1 }
     assert_equal("hello\n", stdout)
   end
+
+  def test_hosts_file_contains_donce_host
+    stdout = donce(image: 'ubuntu:22.04', command: 'cat /etc/hosts', stdout: Loog::NULL, stderr: Loog::NULL)
+    assert_match(donce_host, stdout)
+  end
 end

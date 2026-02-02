@@ -48,7 +48,7 @@ module Kernel
   # The name of the localhost inside Docker container.
   # @return [String] The hostname
   def donce_host
-    OS.linux? ? '172.17.0.1' : 'host.docker.internal'
+    'host.docker.internal'
   end
 
   # Build Docker image (or use existing one), run Docker container, and then clean up.
@@ -130,7 +130,7 @@ module Kernel
       'run',
       ('--detach' if block_given?),
       '--name', Shellwords.escape(container),
-      ("--add-host #{donce_host}:host-gateway" unless OS.linux?),
+      "--add-host #{donce_host}:host-gateway",
       args,
       env.map { |k, v| "--env #{Shellwords.escape("#{k}=#{v}")}" }.join(' '),
       ports.map { |k, v| "--publish #{Shellwords.escape("#{k}:#{v}")}" }.join(' '),
