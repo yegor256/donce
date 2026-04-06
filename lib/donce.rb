@@ -73,29 +73,33 @@ module Kernel
   # @yieldreturn [void] The container will be stopped after the block execution
   def donce(dockerfile: nil, image: nil, home: nil, stdout: $stdout, stderr: $stdout, args: '', env: {}, root: false,
             command: '', timeout: 60, volumes: {}, ports: {}, build_args: {})
-    raise 'Either use "dockerfile" or "home"' if dockerfile && home
-    raise 'Either use "dockerfile" or "image"' if dockerfile && image
-    raise 'Either use "image" or "home"' if home && image
-    raise 'Either "dockerfile", or "home", or "image" must be provided' if !dockerfile && !home && !image
-    raise 'The "timeout" must be an integer or nil' unless timeout.nil? || timeout.is_a?(Integer)
-    raise 'The "volumes" is nil' if volumes.nil?
-    raise 'The "volumes" must be a Hash' unless volumes.is_a?(Hash)
-    raise 'The "stdout" is nil' if stdout.nil?
-    raise 'The "stderr" is nil' if stderr.nil?
-    raise 'The "args" is nil' if args.nil?
-    raise 'The "args" must be a String or Array' unless args.is_a?(String) || args.is_a?(Array)
+    raise(ArgumentError, 'Either use "dockerfile" or "home"') if dockerfile && home
+    raise(ArgumentError, 'Either use "dockerfile" or "image"') if dockerfile && image
+    raise(ArgumentError, 'Either use "image" or "home"') if home && image
+    if !dockerfile && !home && !image
+      raise(ArgumentError, 'Either "dockerfile", or "home", or "image" must be provided')
+    end
+    raise(ArgumentError, 'The "timeout" must be an integer or nil') unless timeout.nil? || timeout.is_a?(Integer)
+    raise(ArgumentError, 'The "volumes" is nil') if volumes.nil?
+    raise(ArgumentError, 'The "volumes" must be a Hash') unless volumes.is_a?(Hash)
+    raise(ArgumentError, 'The "stdout" is nil') if stdout.nil?
+    raise(ArgumentError, 'The "stderr" is nil') if stderr.nil?
+    raise(ArgumentError, 'The "args" is nil') if args.nil?
+    raise(ArgumentError, 'The "args" must be a String or Array') unless args.is_a?(String) || args.is_a?(Array)
     args = args.join(' ') if args.is_a?(Array)
-    raise 'The "env" is nil' if env.nil?
-    raise 'The "env" must be a Hash' unless env.is_a?(Hash)
-    raise 'The "command" is nil' if command.nil?
-    raise 'The "command" must be a String or an Array' unless command.is_a?(String) || command.is_a?(Array)
-    raise 'The "timeout" is nil' if timeout.nil?
-    raise 'The "timeout" must be a number' unless timeout.is_a?(Integer) || timeout.is_a?(Float)
-    raise 'The "ports" is nil' if ports.nil?
+    raise(ArgumentError, 'The "env" is nil') if env.nil?
+    raise(ArgumentError, 'The "env" must be a Hash') unless env.is_a?(Hash)
+    raise(ArgumentError, 'The "command" is nil') if command.nil?
+    unless command.is_a?(String) || command.is_a?(Array)
+      raise(ArgumentError, 'The "command" must be a String or an Array')
+    end
+    raise(ArgumentError, 'The "timeout" is nil') if timeout.nil?
+    raise(ArgumentError, 'The "timeout" must be a number') unless timeout.is_a?(Integer) || timeout.is_a?(Float)
+    raise(ArgumentError, 'The "ports" is nil') if ports.nil?
     ports = ports.to_h { |x| [x, x] } if ports.is_a?(Array)
-    raise 'The "ports" must be a Hash' unless ports.is_a?(Hash)
-    raise 'The "build_args" is nil' if build_args.nil?
-    raise 'The "build_args" must be a Hash' unless build_args.is_a?(Hash)
+    raise(ArgumentError, 'The "ports" must be a Hash') unless ports.is_a?(Hash)
+    raise(ArgumentError, 'The "build_args" is nil') if build_args.nil?
+    raise(ArgumentError, 'The "build_args" must be a Hash') unless build_args.is_a?(Hash)
     docker = ENV['DONCE_SUDO'] ? 'sudo docker' : 'docker'
     command = command.join(' ') if command.is_a?(Array)
     img =
@@ -118,7 +122,7 @@ module Kernel
         elsif home
           qbash("#{docker} build #{a} #{Shellwords.escape(home)}", stdout:, stderr:)
         else
-          raise 'Either "dockerfile" or "home" must be provided'
+          raise(ArgumentError, 'Either "dockerfile" or "home" must be provided')
         end
         i
       end
@@ -143,21 +147,13 @@ module Kernel
       begin
         out, code =
           Timeout.timeout(timeout) do
-            qbash(
-              cmd,
-              stdout:,
-              stderr:,
-              accept: nil,
-              both: true,
-              env:
-            )
+            qbash(cmd, stdout:, stderr:, accept: nil, both: true, env:)
           end
         unless code.zero?
-          raise \
-            "Failed to run #{cmd} " \
-            "(exit code is ##{code}, stdout has #{out.split("\n").count} lines)"
+          raise(ArgumentError,
+                "Failed to run #{cmd} (exit code is ##{code}, stdout has #{out.split("\n").count} lines)")
         end
-        yield container if block_given?
+        yield(container) if block_given?
       ensure
         logs = qbash(
           "#{docker} logs #{Shellwords.escape(container)}",

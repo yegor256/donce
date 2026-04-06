@@ -8,10 +8,6 @@ require 'loog'
 require 'minitest/autorun'
 require_relative '../lib/donce'
 
-# Test for the Donce module functions.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2024-2026 Yegor Bugayenko
-# License:: MIT
 class TestDonce < Minitest::Test
   def test_runs_simple_echo
     stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL)
@@ -90,13 +86,13 @@ class TestDonce < Minitest::Test
           stderr: Loog::NULL) do |id|
       seen = true
       refute_empty(id)
-      sleep 1
+      sleep(1)
     end
     assert(seen)
   end
 
   def test_returns_stdout_from_daemon
-    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL) { |_| sleep 0.1 }
+    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL) { |_| sleep(0.1) }
     assert_equal("hello\n", stdout)
   end
 

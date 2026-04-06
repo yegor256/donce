@@ -15,3 +15,23 @@ plugins:
   - rubocop-performance
   - rubocop-rake
   - rubocop-elegant
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'lib/donce.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'lib/donce.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'lib/donce.rb'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'lib/donce.rb'
+
+Elegant/GoodMethodName:
+  Exclude:
+    - 'lib/donce.rb'

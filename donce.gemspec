@@ -6,8 +6,8 @@
 require 'English'
 
 Gem::Specification.new do |s|
-  s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = '>=3.0'
+  s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to?(:required_rubygems_version=)
+  s.required_ruby_version = '>=3.2'
   s.name = 'donce'
   s.version = '0.0.0'
   s.license = 'MIT'
@@ -25,8 +25,8 @@ Gem::Specification.new do |s|
   s.files = `git ls-files | grep -v -E '^(test/|\\.|renovate)'`.split($RS)
   s.rdoc_options = ['--charset=UTF-8']
   s.extra_rdoc_files = ['README.md', 'LICENSE.txt']
-  s.add_dependency 'backtrace', '~> 0.3'
-  s.add_dependency 'os', '~> 1.1'
-  s.add_dependency 'qbash', '~> 0.3'
+  s.add_dependency('backtrace', '~> 0.3')
+  s.add_dependency('os', '~> 1.1')
+  s.add_dependency('qbash', '~> 0.3')
   s.metadata['rubygems_mfa_required'] = 'true'
 end
