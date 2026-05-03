@@ -14,7 +14,7 @@ require 'tmpdir'
 # Execute Docker container and clean up afterwards.
 #
 # This function helps build temporary Docker
-# images, runs Docker containers, and cleans up afterwards — may be
+# images, run Docker containers, and clean up afterwards — may be
 # convenient for automated tests (for example, with Minitest):
 #
 #  class MyTest < Minitest::Test

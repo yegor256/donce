@@ -50,12 +50,12 @@ ARG UID
 ARG GID
 RUN groupadd -g ${GID} foo || true
 RUN useradd -m -u ${UID} -g ${GID} foo
-USER foo',
+USER foo
 WORKDIR /foo
 COPY --chown=${UID}:${GID} bar.txt .
 ```
 
-The `bar.txt` file is not ready to be modified inside the container.
+The `bar.txt` file is now ready to be modified inside the container.
 
 ## Parameters
 
