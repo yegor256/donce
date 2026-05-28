@@ -10,34 +10,33 @@ require_relative '../lib/donce'
 
 class TestDonce < Minitest::Test
   def test_runs_simple_echo
-    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL)
-    assert_equal("hello\n", stdout)
+    assert_equal("hello\n", donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL))
   end
 
   def test_prints_build_args
-    stdout = donce(
-      dockerfile: [
-        'FROM ubuntu',
-        'ARG FOO=what?',
-        'RUN echo $FOO > /tmp/foo',
-        'CMD cat /tmp/foo'
-      ],
-      build_args: { 'FOO' => 'hello' },
-      stdout: Loog::NULL, stderr: Loog::NULL
+    assert_equal(
+      "hello\n",
+      donce(
+        dockerfile: [
+          'FROM ubuntu',
+          'ARG FOO=what?',
+          'RUN echo $FOO > /tmp/foo',
+          'CMD cat /tmp/foo'
+        ],
+        build_args: { 'FOO' => 'hello' },
+        stdout: Loog::NULL, stderr: Loog::NULL
+      )
     )
-    assert_equal("hello\n", stdout)
   end
 
   def test_runs_existing_image
-    stdout = donce(image: 'ubuntu:22.04', command: 'echo hello', stdout: Loog::NULL, stderr: Loog::NULL)
-    assert_equal("hello\n", stdout)
+    assert_equal("hello\n", donce(image: 'ubuntu:22.04', command: 'echo hello', stdout: Loog::NULL, stderr: Loog::NULL))
   end
 
   def test_runs_from_home
     Dir.mktmpdir do |home|
       File.write(File.join(home, 'Dockerfile'), "FROM ubuntu\nCMD echo hello")
-      stdout = donce(home:, stdout: Loog::NULL, stderr: Loog::NULL)
-      assert_equal("hello\n", stdout)
+      assert_equal("hello\n", donce(home:, stdout: Loog::NULL, stderr: Loog::NULL))
     end
   end
 
@@ -54,8 +53,7 @@ class TestDonce < Minitest::Test
           'CMD cat test.txt'
         ].join("\n")
       )
-      stdout = donce(home:, stdout: Loog::NULL, stderr: Loog::NULL)
-      assert_equal(content, stdout)
+      assert_equal(content, donce(home:, stdout: Loog::NULL, stderr: Loog::NULL))
     end
   end
 
@@ -82,8 +80,10 @@ class TestDonce < Minitest::Test
 
   def test_runs_daemon
     seen = false
-    donce(dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", stdout: Loog::NULL,
-          stderr: Loog::NULL) do |id|
+    donce(
+      dockerfile: "FROM ubuntu\nCMD while true; do sleep 1; echo sleeping; done", stdout: Loog::NULL,
+      stderr: Loog::NULL
+    ) do |id|
       seen = true
       refute_empty(id)
       sleep(1)
@@ -92,12 +92,13 @@ class TestDonce < Minitest::Test
   end
 
   def test_returns_stdout_from_daemon
-    stdout = donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL) { |_| sleep(0.1) }
-    assert_equal("hello\n", stdout)
+    assert_equal(
+      "hello\n",
+      donce(dockerfile: "FROM ubuntu\nCMD echo hello", stdout: Loog::NULL, stderr: Loog::NULL) { |_| sleep(0.1) }
+    )
   end
 
   def test_hosts_file_contains_donce_host
-    stdout = donce(image: 'ubuntu:22.04', command: 'cat /etc/hosts', stdout: Loog::NULL, stderr: Loog::NULL)
-    assert_match(donce_host, stdout)
+    assert_match(donce_host, donce(image: 'ubuntu:22.04', command: 'cat /etc/hosts', stdout: Loog::NULL, stderr: Loog::NULL))
   end
 end

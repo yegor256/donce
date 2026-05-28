@@ -71,8 +71,10 @@ module Kernel
   # @yield [String] Container ID if block is given (runs container in daemon mode)
   # @yieldparam [String] id The ID of the running container
   # @yieldreturn [void] The container will be stopped after the block execution
-  def donce(dockerfile: nil, image: nil, home: nil, stdout: $stdout, stderr: $stdout, args: '', env: {}, root: false,
-            command: '', timeout: 60, volumes: {}, ports: {}, build_args: {})
+  def donce(
+    dockerfile: nil, image: nil, home: nil, stdout: $stdout, stderr: $stdout, args: '', env: {}, root: false,
+    command: '', timeout: 60, volumes: {}, ports: {}, build_args: {}
+  )
     raise(ArgumentError, 'Either use "dockerfile" or "home"') if dockerfile && home
     raise(ArgumentError, 'Either use "dockerfile" or "image"') if dockerfile && image
     raise(ArgumentError, 'Either use "image" or "home"') if home && image
@@ -150,8 +152,10 @@ module Kernel
             qbash(cmd, stdout:, stderr:, accept: nil, both: true, env:)
           end
         unless code.zero?
-          raise(ArgumentError,
-                "Failed to run #{cmd} (exit code is ##{code}, stdout has #{out.split("\n").count} lines)")
+          raise(
+            ArgumentError,
+            "Failed to run #{cmd} (exit code is ##{code}, stdout has #{out.split("\n").count} lines)"
+          )
         end
         yield(container) if block_given?
       ensure
