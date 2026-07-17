@@ -13,14 +13,13 @@ GEM
     ast (2.4.3)
     backtrace (0.4.1)
     builder (3.3.0)
-    date (3.5.1)
     docile (1.4.1)
     drb (2.2.3)
     elapsed (0.3.1)
       loog (~> 0.6)
       tago (~> 0.1)
     ellipsized (0.3.0)
-    erb (6.0.4)
+    erb (6.0.5)
     json (2.20.0)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
@@ -44,9 +43,6 @@ GEM
       ast (~> 2.4.1)
       racc
     prism (1.9.0)
-    psych (5.3.1)
-      date
-      stringio
     qbash (0.8.4)
       backtrace (> 0)
       elapsed (> 0)
@@ -55,9 +51,14 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.4.2)
-    rdoc (7.2.0)
+    rbs (4.0.3)
+      logger
+      prism (>= 1.6.0)
+      tsort
+    rdoc (8.0.0)
       erb
-      psych (>= 4.0.0)
+      prism (>= 1.6.0)
+      rbs (>= 4.0.0)
       tsort
     regexp_parser (2.12.0)
     rexml (3.4.4)
@@ -99,7 +100,6 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    stringio (3.2.0)
     tago (0.7.0)
     tsort (0.2.0)
     unicode-display_width (3.2.0)
@@ -120,7 +120,7 @@ DEPENDENCIES
   minitest-reporters (~> 1.7)
   minitest-retry (~> 0.2)
   rake (~> 13.2)
-  rdoc (~> 7.0)
+  rdoc (~> 8.0)
   rubocop (~> 1.75)
   rubocop-elegant (~> 0.0)
   rubocop-minitest (~> 0.38)
