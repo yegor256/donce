@@ -19,7 +19,7 @@ GEM
       loog (~> 0.6)
       tago (~> 0.1)
     ellipsized (0.3.0)
-    erb (6.0.5)
+    erb (6.0.7)
     json (2.21.2)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
@@ -39,7 +39,7 @@ GEM
       minitest (>= 5.0)
     os (1.1.4)
     parallel (2.3.0)
-    parser (3.3.12.0)
+    parser (3.3.13.0)
       ast (~> 2.4.1)
       racc
     prism (1.9.0)
@@ -51,18 +51,18 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.4.2)
-    rbs (4.0.3)
+    rbs (4.2.0)
       logger
       prism (>= 1.6.0)
       tsort
-    rdoc (8.0.0)
+    rdoc (8.1.0)
       erb
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
     regexp_parser (2.13.1)
     rexml (3.4.4)
-    rubocop (1.92.1)
+    rubocop (1.92.2)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
