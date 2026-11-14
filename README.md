@@ -72,7 +72,7 @@ Here's a list of the available parameters for `donce`:
 * `build_args`: Arguments for docker build (--build-arg)
 * `root`: Let user inside the container be "root" (default: false)
 * `command`: The command to execute in the container
-* `timeout`: Maximum seconds to spend on each docker call (default: 10)
+* `timeout`: Maximum seconds to spend on each docker call (default: 60)
 
 The function `donce_host()` returns the hostname of the host machine that
 can be used from within the container.

@@ -33,6 +33,27 @@ class TestDonce < Minitest::Test
     assert_equal("hello\n", donce(image: 'ubuntu:22.04', command: 'echo hello', stdout: Loog::NULL, stderr: Loog::NULL))
   end
 
+  def test_runs_with_fractional_timeout
+    assert_equal(
+      "hello\n",
+      donce(image: 'ubuntu:22.04', command: 'echo hello', timeout: 60.5, stdout: Loog::NULL, stderr: Loog::NULL)
+    )
+  end
+
+  def test_rejects_nil_timeout
+    assert_equal(
+      'The "timeout" is nil',
+      assert_raises(ArgumentError) { donce(image: 'ubuntu:22.04', timeout: nil) }.message
+    )
+  end
+
+  def test_rejects_nonnumeric_timeout
+    assert_equal(
+      'The "timeout" must be a number',
+      assert_raises(ArgumentError) { donce(image: 'ubuntu:22.04', timeout: '1.5') }.message
+    )
+  end
+
   def test_runs_from_home
     Dir.mktmpdir do |home|
       File.write(File.join(home, 'Dockerfile'), "FROM ubuntu\nCMD echo hello")
