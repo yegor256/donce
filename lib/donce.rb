@@ -88,7 +88,7 @@ module Kernel
     raise(ArgumentError, 'The "stderr" is nil') if stderr.nil?
     raise(ArgumentError, 'The "args" is nil') if args.nil?
     raise(ArgumentError, 'The "args" must be a String or Array') unless args.is_a?(String) || args.is_a?(Array)
-    args = args.join(' ') if args.is_a?(Array)
+    args = Shellwords.join(args) if args.is_a?(Array)
     raise(ArgumentError, 'The "env" is nil') if env.nil?
     raise(ArgumentError, 'The "env" must be a Hash') unless env.is_a?(Hash)
     raise(ArgumentError, 'The "command" is nil') if command.nil?
