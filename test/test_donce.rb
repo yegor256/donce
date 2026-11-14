@@ -33,6 +33,37 @@ class TestDonce < Minitest::Test
     assert_equal("hello\n", donce(image: 'ubuntu:22.04', command: 'echo hello', stdout: Loog::NULL, stderr: Loog::NULL))
   end
 
+  def test_preserves_spaces_in_array_args
+    assert_equal(
+      "hello world\n",
+      donce(
+        image: 'ubuntu:22.04', args: ['--env', 'FOO=hello world'], command: 'printenv FOO',
+        stdout: Loog::NULL, stderr: Loog::NULL
+      )
+    )
+  end
+
+  def test_preserves_shell_characters_in_array_args
+    value = "hello 'world' \"quoted\" $HOME; \\path\nnext line"
+    assert_equal(
+      "#{value}\n",
+      donce(
+        image: 'ubuntu:22.04', args: ['--env', "FOO=#{value}"], command: 'printenv FOO',
+        stdout: Loog::NULL, stderr: Loog::NULL
+      )
+    )
+  end
+
+  def test_accepts_shell_quoting_in_string_args
+    assert_equal(
+      "hello world\n",
+      donce(
+        image: 'ubuntu:22.04', args: '--env "FOO=hello world"', command: 'printenv FOO',
+        stdout: Loog::NULL, stderr: Loog::NULL
+      )
+    )
+  end
+
   def test_runs_from_home
     Dir.mktmpdir do |home|
       File.write(File.join(home, 'Dockerfile'), "FROM ubuntu\nCMD echo hello")
