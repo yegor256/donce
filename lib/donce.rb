@@ -66,7 +66,7 @@ module Kernel
   # @param [Hash<String,String>] build_args Arguments for +docker build+ as +--build-arg+ may need
   # @param [Boolean] root Let user inside the container be "root"?
   # @param [String|Array<String>] command The command for the script inside the container
-  # @param [Integer] timeout Maximum seconds to spend on each +docker+ call
+  # @param [Integer, Float] timeout Maximum seconds to spend on each +docker+ call
   # @return [String] The stdout of the container
   # @yield [String] Container ID if block is given (runs container in daemon mode)
   # @yieldparam [String] id The ID of the running container
@@ -81,7 +81,6 @@ module Kernel
     if !dockerfile && !home && !image
       raise(ArgumentError, 'Either "dockerfile", or "home", or "image" must be provided')
     end
-    raise(ArgumentError, 'The "timeout" must be an integer or nil') unless timeout.nil? || timeout.is_a?(Integer)
     raise(ArgumentError, 'The "volumes" is nil') if volumes.nil?
     raise(ArgumentError, 'The "volumes" must be a Hash') unless volumes.is_a?(Hash)
     raise(ArgumentError, 'The "stdout" is nil') if stdout.nil?
